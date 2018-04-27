@@ -4,8 +4,9 @@ import re
 '''
 global variances
 '''
+NEWLINE_CHARACTER_SIZE  = 1
+PAGE_BREAK_SIZE         = 1
 HEADER_LINES        = 9
-INTERVAL_SIZE       = 2
 DELIMITER           = ''
 FIRST_LINE          = '※' * 20
 CONTROL_CODE_BEGIN  = '{'
@@ -45,18 +46,24 @@ class TextItem:
             if seg[0] == CONTROL_CODE_BEGIN and seg[-1] == CONTROL_CODE_END:
                 #print(int((len(seg))/2-1))
                 length += int((len(seg))/2-1)
-            elif re.match(SINGLE_BYTE_PATTERN, seg[0]):
-                #print(len(seg))
-                length += len(seg)
             else:
-                #print(len(seg.encode('utf-16-le')))
-                length += len(seg.encode('utf-16-le'))
-        self.length = length
+                lines = seg.split('\n')
+                #print(lines)
+                for line in lines:
+                    if not line: continue
+                    if re.match(SINGLE_BYTE_PATTERN, line[0]):
+                        #print(len(line))
+                        length += len(line)
+                    else:
+                        #print(len(line.encode('utf-16-le')))
+                        length += len(line.encode('utf-16-le'))
+                length += (len(lines)-1) * NEWLINE_CHARACTER_SIZE
+        self.length = length + PAGE_BREAK_SIZE
         #print(self.length)
 
     def calcAddress(self, pre):
         if pre == None: return
-        self.address = pre.address + pre.length + INTERVAL_SIZE
+        self.address = pre.address + pre.length
 
 class TextParser:
     def __init__(self):
