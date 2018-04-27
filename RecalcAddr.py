@@ -11,7 +11,7 @@ FIRST_LINE          = '※' * 20
 CONTROL_CODE_BEGIN  = '{'
 CONTROL_CODE_END    = '}'
 SPLIT_PATTERN       = '(['+CONTROL_CODE_BEGIN+CONTROL_CODE_END+'])'
-SINGLE_BYTE_PATTERN = '^[A-Za-z0-9_]*$'
+SINGLE_BYTE_PATTERN = '^[A-Za-z0-9_]+$'
 
 class TextItem:
     def __init__(self):
